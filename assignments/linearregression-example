@@ -1,0 +1,43 @@
+%% 1 plot data
+yearsexp=[3 4 5 6 8 9 10 11 12 14 15 16 17];
+vol=[1.4 1.5 2.2 2.4 3.1 3.2 3.2 3.9 4.1 4.7 4.5 5.2 5];
+plot(age, wingLength, '.', 'MarkerSize', 10);
+
+%% 2 regression line
+n=length(yearsexp);
+SumX=sum(yearsexp); 
+MeanX=mean(yearsexp); 
+SumX2=sum(yearsexp.^2);  
+Sumx2=SumX2-SumX^2/n; 
+SumY=sum(vol); 
+MeanY=mean(vol); 
+SumXY=sum(yearsexp.*vol);
+Sumxy=SumXY-SumX*SumY/n;
+SumY2=sum(vol.^2);
+
+b=Sumxy/Sumx2;
+a=meanvol-b*meanyearsexp;
+
+xline=[3 17];
+ypred=b*xline+a;
+plot(xline,ypred,yearsexp,vol,'.','Markersize',10);
+xlabel('yearsexp (years)');
+ylabel('vol(cm)');
+
+%% 3 ttest
+df=n-2; 
+totalSS=SumY2-SumY^2/n;    
+regressionSS=Sumxy^2/Sumx2;
+residualSS=totalSS-regressionSS;
+Fstat=regressionSS/(residualSS/df);
+prob=fpval(Fstat,1,n-2);% 2.6335e-10
+
+%% 4 CI
+t=-1*tinv(.05/2,n-2); 
+L1=b-t*sb; 
+L2=b+t*sb;
+a1=MeanY-L1*MeanX; 
+a2=MeanY-L2*MeanX;
+plot(Xline,L1*Xline+a1,'--','color',[.75 .75 .75 ],'linewidth',2)
+plot(Xline,L2*Xline+a2,'--','color',[.75 .75 .75 ],'linewidth',2)
+
